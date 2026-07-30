@@ -48,9 +48,9 @@ public class ContentService {
                 .toList();
     }
 
-    public MovieResponse getMovieById(String id) {
+    public MovieResponse getMovieById(String movieId) {
 
-        Movie movie = contentRepository.findById(id)
+        Movie movie = contentRepository.findById(movieId)
                 .orElseThrow(() -> new IllegalArgumentException("Movie not found"));
         return mapToResponse(movie);
     }
@@ -67,6 +67,33 @@ public class ContentService {
         return contentRepository.findByTitleContainingIgnoreCase(title).stream()
                 .map(this::mapToResponse)
                 .toList();
+    }
+
+    public void updateVideoKey(String movieId, String videoKey) {
+
+        log.info("Updating video key for movie {}", movieId);
+
+        Movie movie = contentRepository.findById(movieId)
+                .orElseThrow(() -> new IllegalArgumentException("Movie not found"));
+
+        movie.setVideoKey(videoKey);
+        movie.setVideoStatus(VideoStatus.UPLOADED);
+
+        contentRepository.save(movie);
+    }
+
+    public void updateHlsUrl(String movieId, String hlsUrl) {
+
+        log.info("Updating HLS url for movie {}", movieId);
+
+        Movie movie = contentRepository.findById(movieId)
+                .orElseThrow(() -> new IllegalArgumentException("Movie not found"));
+
+        movie.setHlsUrl(hlsUrl);
+        movie.setVideoStatus(VideoStatus.READY);
+        contentRepository.save(movie);
+
+        log.info("Movie {} is ready for streaming", movie.getTitle());
     }
 
     private MovieResponse mapToResponse(Movie savedMovie) {
