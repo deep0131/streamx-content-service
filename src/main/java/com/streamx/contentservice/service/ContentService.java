@@ -82,18 +82,22 @@ public class ContentService {
         contentRepository.save(movie);
     }
 
-    public void updateHlsUrl(String movieId, String hlsUrl) {
+    public void updateEncodingStatus(String movieId, boolean isEncoded) {
 
-        log.info("Updating HLS url for movie {}", movieId);
+        log.info("Updating encoding status for movie {}", movieId);
 
         Movie movie = contentRepository.findById(movieId)
                 .orElseThrow(() -> new IllegalArgumentException("Movie not found"));
 
-        movie.setHlsUrl(hlsUrl);
-        movie.setVideoStatus(VideoStatus.READY);
-        contentRepository.save(movie);
+        if (isEncoded) {
+            movie.setVideoStatus(VideoStatus.READY);
+            log.info("Movie {} is ready for streaming", movie.getTitle());
+        } else {
+            movie.setVideoStatus(VideoStatus.FAILED);
+            log.info("Movie {} failed to encode", movie.getTitle());
+        }
 
-        log.info("Movie {} is ready for streaming", movie.getTitle());
+        contentRepository.save(movie);
     }
 
     private MovieResponse mapToResponse(Movie savedMovie) {

@@ -16,6 +16,18 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5Dialect
 
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: content-service-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: '*'
+        use.type.headers: false
+        value.default.type: java.util.HashMap
+
 server:
   port: 8080
 
@@ -23,4 +35,4 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info
+        include: health, info
