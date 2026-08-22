@@ -2,6 +2,7 @@ package com.streamx.contentservice.dto;
 
 import com.streamx.contentservice.model.Genre;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,7 +18,7 @@ public class MovieRequest {
 
     private String description;
 
-    @NotBlank(message = "Genre is required")
+    @NotNull(message = "Genre is required")
     private Genre genre;
 
     @NotBlank(message = "Release year is required")
